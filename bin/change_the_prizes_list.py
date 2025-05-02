@@ -1,22 +1,17 @@
+import json
+import os
+import re
+import tkinter as tk
+from tkinter import messagebox
 def run_mainloop():
-    import json
-    import os
-    import re
-
-    # 定义一个函数来添加prize
-
-    # 定义一个函数来检查字符串是否包含单引号
-    import tkinter as tk
-    from tkinter import messagebox
-
-    # 定义两个函数来检查字符串是否包含单引号或空值
+    # 检测合法性
     def contains_single_quote(s):
         return re.search(r"'", s) is not None
 
     def is_empty(s):
         return not s
 
-    # 定义一个函数来添加prize
+    # 添加prizes
     def add_prize():
         prize = prize_entry.get()
         if is_empty(prize):
@@ -28,7 +23,7 @@ def run_mainloop():
             prize_listbox.insert(tk.END, prize)
             prize_entry.delete(0, tk.END)
 
-    # 定义一个函数来删除prize
+    # 删除prize
     def delete_prize():
         selected_indices = prize_listbox.curselection()
         for index in selected_indices:
@@ -36,7 +31,7 @@ def run_mainloop():
             prizes.remove(prize)
             prize_listbox.delete(index)
 
-    # 定义一个函数来加载prizes列表
+    # 加载prizes列表
     def load_prizes():
         global prizes
         prizes = load_prizes_from_json(os.path.join(os.path.abspath(os.path.dirname(__file__)), '../data/prizes.json'))
@@ -44,12 +39,12 @@ def run_mainloop():
         for prize in prizes:
             prize_listbox.insert(tk.END, prize)
 
-    # 定义一个函数来保存prizes列表
+    # 保存prizes
     def save_prizes():
         save_prizes_to_json(prizes, os.path.join(os.path.abspath(os.path.dirname(__file__)), '../data/prizes.json'))
         messagebox.showinfo("保存成功", "奖品已成功保存")
 
-    # 定义一个函数来从JSON文件中读取prizes列表
+    # 读取prizes
     def load_prizes_from_json(file_path):
         if os.path.exists(file_path):
             with open(file_path, 'r') as f:
@@ -58,7 +53,7 @@ def run_mainloop():
         else:
             return []
 
-    # 定义一个函数来将prizes列表转换为JSON格式
+    # 转换为JSON
     def save_prizes_to_json(prizes, file_path):
         with open(file_path, 'w') as f:
             json.dump(prizes, f)
