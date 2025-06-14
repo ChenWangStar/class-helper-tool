@@ -3,8 +3,8 @@ import os.path
 import tkinter as tk
 from tkinter import messagebox
 import random
-from change_the_prizes_list import run_mainloop
 from PIL import Image, ImageTk
+from change_the_prizes_list import change_list_mainloop
 
 
 class Box:
@@ -74,7 +74,7 @@ if __name__ == '__main__':
                 # prize_list = [f'奖品{x}' for x in range(60)]
                 if len(prize_list) == 0:
                     if messagebox.askquestion('提示', '未检测到存在奖品信息，请问需要添加吗?（否即退出）') == 'yes':
-                        run_mainloop()
+                        change_list_mainloop()
                     else:
                         exit(0)
                 else:

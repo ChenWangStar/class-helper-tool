@@ -3,8 +3,12 @@ import os
 import re
 import tkinter as tk
 from tkinter import messagebox
-def run_mainloop():
-    # 检测合法性
+
+
+# 检测字符串合法性
+
+
+def change_list_mainloop():
     def contains_single_quote(s):
         return re.search(r"'", s) is not None
 
@@ -58,42 +62,44 @@ def run_mainloop():
         with open(file_path, 'w') as f:
             json.dump(prizes, f)
 
-    # 创建主窗口
-    root = tk.Tk()
-    root.title('Prize Manager')
+    try:
+        root = tk.Tk()
+        root.title('Prize Manager')
 
-    # 创建一个列表框来显示prizes
-    prize_listbox = tk.Listbox(root, height=6, width=35, border=0)
-    prize_listbox.pack(pady=10)
+        # 创建一个列表框来显示prizes
+        prize_listbox = tk.Listbox(root, height=6, width=35, border=0)
+        prize_listbox.pack(pady=10)
 
-    # 创建一个文本框来输入prize
-    prize_entry = tk.Entry(root, width=35)
-    prize_entry.pack(pady=10)
+        # 创建一个文本框来输入prize
+        prize_entry = tk.Entry(root, width=35)
+        prize_entry.pack(pady=10)
 
-    # 创建一个按钮来添加prize
-    add_button = tk.Button(root, text='添加', command=add_prize)
-    add_button.pack(pady=10)
+        # 创建一个按钮来添加prize
+        add_button = tk.Button(root, text='添加', command=add_prize)
+        add_button.pack(pady=10)
 
-    # 创建一个按钮来删除prize
-    delete_button = tk.Button(root, text='删除', command=delete_prize)
-    delete_button.pack(pady=10)
+        # 创建一个按钮来删除prize
+        delete_button = tk.Button(root, text='删除', command=delete_prize)
+        delete_button.pack(pady=10)
 
-    # 创建一个按钮来加载prizes列表
-    load_button = tk.Button(root, text='加载', command=load_prizes)
-    load_button.pack(pady=10)
+        # 创建一个按钮来加载prizes列表
+        load_button = tk.Button(root, text='加载', command=load_prizes)
+        load_button.pack(pady=10)
 
-    # 创建一个按钮来保存prizes列表
-    save_button = tk.Button(root, text='保存', command=save_prizes)
-    save_button.pack(pady=10)
+        # 创建一个按钮来保存prizes列表
+        save_button = tk.Button(root, text='保存', command=save_prizes)
+        save_button.pack(pady=10)
 
-    # 定义一个全局变量来存储prizes列表
-    prizes = []
+        # prizes列表
+        prizes = []
 
-    # 加载prizes列表
-    load_prizes()
+        # 加载prizes列表
+        load_prizes()
 
-    root.mainloop()
+        root.mainloop()
+    except Exception as e:
+        messagebox.showerror('Error', str(e))
 
 
 if __name__ == '__main__':
-    run_mainloop()
+    change_list_mainloop()

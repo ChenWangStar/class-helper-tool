@@ -2,26 +2,17 @@ import tkinter as tk
 from tkinter import ttk
 
 
-class WhiteboardApp:
+class App:
     def __init__(self, root):
         self.root = root
         self.root.title("白板")
 
-        # 初始化变量
         self.current_color = "black"
         self.pen_size = 5
         self.x = None
         self.y = None
 
         # 创建界面组件
-        self.create_widgets()
-
-        # 绑定事件
-        self.canvas.bind("<B1-Motion>", self.paint)
-        self.canvas.bind("<ButtonRelease-1>", self.reset_position)
-
-    def create_widgets(self):
-        # 工具栏
         toolbar = ttk.Frame(self.root, padding=5)
         toolbar.pack(side=tk.TOP, fill=tk.X)
 
@@ -51,6 +42,11 @@ class WhiteboardApp:
         self.canvas = tk.Canvas(self.root, width=800, height=600, bg="white")
         self.canvas.pack(expand=True, fill=tk.BOTH)
 
+        # 绑定事件
+        self.canvas.bind("<B1-Motion>", self.paint)
+        self.canvas.bind("<ButtonRelease-1>", self.reset_position)
+
+
     def set_color(self, color):
         self.current_color = color
 
@@ -65,7 +61,7 @@ class WhiteboardApp:
 
     def paint(self, event):
         if self.x is not None and self.y is not None:
-            # 绘制线条
+            # 绘制
             self.canvas.create_line(
                 self.x, self.y, event.x, event.y,
                 width=self.pen_size,
@@ -84,5 +80,5 @@ class WhiteboardApp:
 
 if __name__ == "__main__":
     root = tk.Tk()
-    app = WhiteboardApp(root)
+    app = App(root)
     root.mainloop()

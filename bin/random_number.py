@@ -10,103 +10,104 @@ console = Console()
 
 left_boy = 0
 left_girl = 0
+extracted = []
 
 
-def main():
-    extracted = []
-    global left_boy, left_girl
+def reset_extracted():
+    global extracted, left_girl, left_boy
+    extracted = []  # 清空已抽取列表
+    # 重置剩余人数显示
+    left_boy = sum(1 for student in students if student['性别'] == '男')
+    left_girl = sum(1 for student in students if student['性别'] == '女')
+    left_boy_label.config(text=f'男生可抽取人数：{left_boy}')
+    left_girl_label.config(text=f'女生可抽取人数：{left_girl}')
+    result_label.config(text="")  # 清空结果显示
 
-    def reset_extracted():
-        nonlocal extracted
-        extracted = []  # 清空已抽取列表
-        # 重置剩余人数显示
+
+def show_selected():
+    global left_girl, left_boy
+
+    # 获取用户选择的性别
+    selected_sex = sex_selected_value.get()
+    # 获取用户选择的显示方式
+    display_type = name_or_number.get()
+
+    repeated_not = not_repeated.get()
+    # 获取用户输入的抽取个数
+    try:
+        num_to_select = int(entry.get())
+        if num_to_select <= 0:  # 添加对负数和零的检查
+            messagebox.showerror("错误", "抽取个数必须大于0")
+            return
+    except ValueError:
+        messagebox.showerror("错误", "请输入有效的数字")
+        return
+
+    if repeated_not == 'yes':
+        # 首先筛选出未被抽取的学生
+        filtered_students_temp = [x for x in students if x['学号'] not in extracted]
+
+        # 然后根据性别筛选
+        if selected_sex == "随机":
+            filtered_students = filtered_students_temp
+        else:
+            filtered_students = [student for student in filtered_students_temp if student['性别'] == selected_sex]
+
+        # 计算剩余人数
+        left_boy = sum(1 for student in filtered_students_temp if student['性别'] == '男')
+        left_girl = sum(1 for student in filtered_students_temp if student['性别'] == '女')
+
+        # 检查抽取数量是否合法
+        if num_to_select > len(filtered_students):
+            messagebox.showerror("错误", f"抽取人数不能超过{len(filtered_students)}")
+            return
+    else:
+        if selected_sex == "随机":
+            filtered_students = students
+        else:
+            filtered_students = [student for student in students if student['性别'] == selected_sex]
+
+        # 计算总人数
         left_boy = sum(1 for student in students if student['性别'] == '男')
         left_girl = sum(1 for student in students if student['性别'] == '女')
-        left_boy_label.config(text=f'男生可抽取人数：{left_boy}')
-        left_girl_label.config(text=f'女生可抽取人数：{left_girl}')
-        result_label.config(text="")  # 清空结果显示
 
-    def show_selected():
-        global left_girl, left_boy
-
-        # 获取用户选择的性别
-        selected_sex = sex_selected_value.get()
-        # 获取用户选择的显示方式
-        display_type = name_or_number.get()
-
-        repeated_not = not_repeated.get()
-        # 获取用户输入的抽取个数
-        try:
-            num_to_select = int(entry.get())
-            if num_to_select <= 0:  # 添加对负数和零的检查
-                messagebox.showerror("错误", "抽取个数必须大于0")
-                return
-        except ValueError:
-            messagebox.showerror("错误", "请输入有效的数字")
+        # 检查抽取数量是否合法
+        if num_to_select > len(filtered_students):
+            messagebox.showerror("错误", f"抽取人数不能超过{len(filtered_students)}")
             return
 
-        if repeated_not == 'yes':
-            # 首先筛选出未被抽取的学生
-            filtered_students_temp = [x for x in students if x['学号'] not in extracted]
+    # 随机抽取学生
+    selected_students = random.sample(filtered_students, num_to_select)
+    for s in selected_students:
+        extracted.append(s['学号'])
 
-            # 然后根据性别筛选
-            if selected_sex == "随机":
-                filtered_students = filtered_students_temp
-            else:
-                filtered_students = [student for student in filtered_students_temp if student['性别'] == selected_sex]
-
-            # 计算剩余人数
-            left_boy = sum(1 for student in filtered_students_temp if student['性别'] == '男')
-            left_girl = sum(1 for student in filtered_students_temp if student['性别'] == '女')
-
-            # 检查抽取数量是否合法
-            if num_to_select > len(filtered_students):
-                messagebox.showerror("错误", f"抽取人数不能超过{len(filtered_students)}")
-                return
+    # 根据显示方式生成结果
+    result = []
+    for student in selected_students:
+        if display_type == '学号':
+            result.append(f"{student['学号']}")
         else:
-            if selected_sex == "随机":
-                filtered_students = students
-            else:
-                filtered_students = [student for student in students if student['性别'] == selected_sex]
+            result.append(f"{student['姓名']}")
 
-            # 计算总人数
-            left_boy = sum(1 for student in students if student['性别'] == '男')
-            left_girl = sum(1 for student in students if student['性别'] == '女')
+    # 将结果按每行最多 10 个进行换行
+    formatted_result = []
+    for i in range(0, len(result), 10):  # 每行最多 10 个
+        formatted_result.append("     ".join(result[i:i + 10]))
+    formatted_result = "\n".join(formatted_result)
 
-            # 检查抽取数量是否合法
-            if num_to_select > len(filtered_students):
-                messagebox.showerror("错误", f"抽取人数不能超过{len(filtered_students)}")
-                return
+    # 显示结果
+    result_label.config(text=formatted_result, font=("Arial", 20), fg="blue")
 
-        # 随机抽取学生
-        selected_students = random.sample(filtered_students, num_to_select)
-        for s in selected_students:
-            extracted.append(s['学号'])
+    # 更新剩余人数显示
+    if repeated_not == 'yes':
+        left_boy = sum(1 for student in students if student['性别'] == '男' and student['学号'] not in extracted)
+        left_girl = sum(1 for student in students if student['性别'] == '女' and student['学号'] not in extracted)
 
-        # 根据显示方式生成结果
-        result = []
-        for student in selected_students:
-            if display_type == '学号':
-                result.append(f"{student['学号']}")
-            else:
-                result.append(f"{student['姓名']}")
+    left_boy_label.config(text=f'男生可抽取人数：{left_boy}')
+    left_girl_label.config(text=f'女生可抽取人数：{left_girl}')
 
-        # 将结果按每行最多 10 个进行换行
-        formatted_result = []
-        for i in range(0, len(result), 10):  # 每行最多 10 个
-            formatted_result.append("     ".join(result[i:i + 10]))
-        formatted_result = "\n".join(formatted_result)
 
-        # 显示结果
-        result_label.config(text=formatted_result, font=("Arial", 20), fg="blue")
-
-        # 更新剩余人数显示
-        if repeated_not == 'yes':
-            left_boy = sum(1 for student in students if student['性别'] == '男' and student['学号'] not in extracted)
-            left_girl = sum(1 for student in students if student['性别'] == '女' and student['学号'] not in extracted)
-        left_boy_label.config(text=f'男生可抽取人数：{left_boy}')
-        left_girl_label.config(text=f'女生可抽取人数：{left_girl}')
-
+if __name__ == '__main__':
     try:
         if os.path.exists(os.path.join(os.path.dirname(os.path.abspath(__file__)), '../data/students.xlsx')):
             df = pd.read_excel(os.path.join(os.path.dirname(os.path.abspath(__file__)), '../data/students.xlsx'))
@@ -192,7 +193,3 @@ def main():
 
     except Exception as e:
         messagebox.showerror('Error', f'遇到错误\n{e}')
-
-
-if __name__ == '__main__':
-    main()

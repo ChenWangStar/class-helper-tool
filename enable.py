@@ -6,12 +6,12 @@ time_periods = [
     {
         'start_hour': 0, 'start_minute': 0,
         'end_hour': 7, 'end_minute': 10,
-        'url': "file:///D:/attendance/new_morning_monday.html"
+        'url': "file:///D:/template/new_morning_monday.html"
     },
     {
         'start_hour': 17, 'start_minute': 6,
         'end_hour': 18, 'end_minute': 50,
-        'url': "file:///D:/attendance/new_evening.html"
+        'url': "file:///D:/template/attendance_template.html"
     }
 ]
 
